@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TrackWise.Database\TrackWise.Database.csproj" />
+    <ProjectReference Include="..\TrackWise.Models\TrackWise.Models.csproj" />
+  </ItemGroup>
+
 </Project>
