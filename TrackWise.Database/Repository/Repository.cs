@@ -35,10 +35,15 @@ namespace TrackWise.Database.Repository
 
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             IQueryable<T> query = dbSet;
             return query.ToList();
+        }
+
+        public void Save()
+        {
+            db.SaveChanges();
         }
 
         public void Update(T entity)

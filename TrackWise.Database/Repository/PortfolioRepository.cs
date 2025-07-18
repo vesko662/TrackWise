@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,9 +17,9 @@ namespace TrackWise.Database.Repository
             this.db = db;
         }
 
-        public void Save()
+        public override IEnumerable<Portfolio> GetAll()
         {
-           db.SaveChanges();
+            return dbSet.Include(p => p.Currency).ToList();
         }
     }
 }

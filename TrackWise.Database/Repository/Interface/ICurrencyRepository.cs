@@ -7,8 +7,7 @@ using TrackWise.Models.Entities;
 
 namespace TrackWise.Database.Repository.Interface
 {
-    public interface IPortfolioRepository :IRepository<Portfolio>
+    public interface ICurrencyRepository : IRepository<Currency>
     {
-        
     }
 }

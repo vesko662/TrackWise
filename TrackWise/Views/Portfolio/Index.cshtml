@@ -1,9 +1,13 @@
-﻿<div class="porfolioContaner">
+﻿@model PortfolioIndexViewModel
+
+<div class="porfolioContaner">
     <div class="d-flex justify-content-between align-items-center">
         <h4>Portfolios</h4>
-        <button class="btn btn-primary">Add a portfolio</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPortfolioModal">
+            Add a portfolio
+        </button>
     </div>
-
+  
     <table class="table">
         <thead>
             <tr>
@@ -15,13 +19,60 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><a href="#">9oZcKBTN</a></td>
-                <td></td>
-                <td>EUR</td>
-                <td>2 minutes ago</td>
-                <td class="text-end"><a href="#">Tax reports</a> <i class="bi bi-pencil-square ms-2"></i></td>
-            </tr>
+            @if(Model.Portfolios == null || !Model.Portfolios.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        No portfolios found. Click “Add a portfolio” to get started.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var portfolio in Model.Portfolios)
+                {
+                    <tr>
+                        <td>@portfolio.Id.ToString().Substring(0, 8)</td>
+                        <td>@portfolio.Name</td>
+                        <td>@portfolio.CurrencyCode</td>
+                        <td>@portfolio.CreatedAt.ToShortDateString()</td>
+                        <td class="text-end">
+                            <a asp-controller="Portfolio" asp-action="Settings"><i class="bi bi-pencil-square ms-2"></i></a>
+                        </td>
+                    </tr>
+                }
+            }
         </tbody>
     </table>
+    <div class="modal fade" id="addPortfolioModal" tabindex="-1" aria-labelledby="addPortfolioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="Create" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPortfolioLabel">Add Portfolio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label asp-for="CreateDto.Name" class="form-label"></label>
+                            <input asp-for="CreateDto.Name" class="form-control" />
+                            <span asp-validation-for="CreateDto.Name" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CreateDto.CurrencyId" class="form-label">Currency</label>
+                            <select asp-for="CreateDto.CurrencyId" asp-items="ViewBag.Currencies" class="form-select"></select>
+                            <span asp-validation-for="CreateDto.CurrencyId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
