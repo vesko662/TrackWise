@@ -19,6 +19,7 @@ namespace TrackWise.Services.Mapping
                 .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.Currency.Code));
 
             CreateMap<PortfolioCreateDto, Portfolio>();
+            CreateMap<Portfolio, PortfolioUpdateDto>();
             CreateMap<PortfolioUpdateDto, Portfolio>();
 
             // Currency mappings

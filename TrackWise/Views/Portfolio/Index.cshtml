@@ -32,12 +32,14 @@
                 @foreach (var portfolio in Model.Portfolios)
                 {
                     <tr>
-                        <td>@portfolio.Id.ToString().Substring(0, 8)</td>
+                        <td>
+                            <a asp-controller="PortfolioDashboard" asp-route-id="@portfolio.Id" asp-action="Index">@portfolio.Id.ToString().Substring(0, 8)</a>
+                        </td>
                         <td>@portfolio.Name</td>
                         <td>@portfolio.CurrencyCode</td>
                         <td>@portfolio.CreatedAt.ToShortDateString()</td>
                         <td class="text-end">
-                            <a asp-controller="Portfolio" asp-action="Settings"><i class="bi bi-pencil-square ms-2"></i></a>
+                            <a asp-controller="Portfolio" asp-route-id="@portfolio.Id" asp-action="Settings"><i class="bi bi-pencil-square ms-2"></i></a>
                         </td>
                     </tr>
                 }

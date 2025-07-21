@@ -1,0 +1,55 @@
+﻿    @model TransactionCreateDto
+
+    <div class="porfolioContaner mt-4">
+        <h4 class="mb-4">Add Transaction</h4>
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="AssetId" class="form-label">Asset</label>
+                <select asp-for="AssetId" asp-items="ViewBag.Assets" class="form-select select2"></select>
+                <span asp-validation-for="AssetId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Type" class="form-label">Transaction Type</label>
+                <select asp-for="Type" class="form-select">
+                    @foreach (var type in Enum.GetValues(typeof(TransactionType)))
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Quantity" class="form-label">Quantity</label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label">Price</label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Created" class="form-label">Date</label>
+                <input asp-for="Created" type="datetime-local" class="form-control" />
+                <span asp-validation-for="Created" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="javascript:history.back()" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    @* @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            $(document).ready(function () {
+                $('.select2').select2();
+            });
+        </script>
+    } *@

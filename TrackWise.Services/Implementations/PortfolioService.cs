@@ -13,7 +13,7 @@ using TrackWise.Services.Interfaces;
 
 namespace TrackWise.Services.Implementations
 {
-    public class PortfolioService :IPortfolioService
+    public class PortfolioService : IPortfolioService
     {
         private readonly IPortfolioRepository portfolioRep;
         private readonly IMapper mapper;
@@ -31,9 +31,31 @@ namespace TrackWise.Services.Implementations
             portfolioRep.Save();
         }
 
+        public void DeletePortfolio(Guid id)
+        {
+            portfolioRep.Delete(portfolioRep.Get(x => x.Id == id));
+            portfolioRep.Save();
+        }
+
+        public PortfolioDto GetPortfolio(Guid id)
+        {
+            return mapper.Map<PortfolioDto>(portfolioRep.Get(x => x.Id == id));
+        }
+
+        public PortfolioUpdateDto GetPortfolioForEdit(Guid id)
+        {
+            return mapper.Map<PortfolioUpdateDto>(portfolioRep.Get(x => x.Id == id));
+        }
+
         public IEnumerable<PortfolioDto> GetPortfolios()
         {
-            return portfolioRep.GetAll().Select(s => mapper.Map<PortfolioDto>(s)).ToList(); 
-        } 
+            return portfolioRep.GetAll().Select(s => mapper.Map<PortfolioDto>(s)).ToList();
+        }
+
+        public void UpdatePortfolio(PortfolioUpdateDto portfolio)
+        {
+            portfolioRep.Update(mapper.Map<Portfolio>(portfolio));
+            portfolioRep.Save();
+        }
     }
 }

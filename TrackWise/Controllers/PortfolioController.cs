@@ -15,6 +15,11 @@ namespace TrackWise.Web.Controllers
             this.portfolioService = portfolioService;
             this.currencyService = currencyService;
         }
+
+        private void LoadCurrencies()
+        {
+            ViewBag.Currencies = new SelectList(currencyService.GetAll(), "Id", "Code");
+        }
         public IActionResult Index()
         {
             var viewModel = new PortfolioIndexViewModel
@@ -22,7 +27,7 @@ namespace TrackWise.Web.Controllers
                 Portfolios = portfolioService.GetPortfolios(),
                 CreateDto = new PortfolioCreateDto()
             };
-            ViewBag.Currencies = new SelectList(currencyService.GetAll(), "Id", "Code");
+            LoadCurrencies();
             return View(viewModel);
         }
         [HttpPost]
@@ -42,7 +47,7 @@ namespace TrackWise.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Currencies = new SelectList(currencyService.GetAll(), "Id", "Code");
+                LoadCurrencies();
                 return View("Index", model);
             }
 
@@ -51,9 +56,29 @@ namespace TrackWise.Web.Controllers
         }
 
 
-        public IActionResult Settings()
+        public IActionResult Settings(Guid id)
         {
-            return View();
+            LoadCurrencies();
+            return View(portfolioService.GetPortfolioForEdit(id));
+        }
+        [HttpPost]
+        public IActionResult Settings(PortfolioUpdateDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                LoadCurrencies();
+                return View(portfolioService.GetPortfolioForEdit(model.Id));
+            }
+            portfolioService.UpdatePortfolio(model);
+
+            return RedirectToAction("Index");
+        }
+
+      [HttpPost]
+        public IActionResult Delete(Guid id)
+        {
+            portfolioService.DeletePortfolio(id);
+            return RedirectToAction("Index");
         }
     }
 }

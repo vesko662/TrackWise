@@ -12,6 +12,13 @@ namespace TrackWise.Services.Interfaces
     {
        public IEnumerable<PortfolioDto> GetPortfolios();
 
+        public PortfolioDto GetPortfolio(Guid id);
+
+        public PortfolioUpdateDto GetPortfolioForEdit(Guid id);
+
+        public void UpdatePortfolio(PortfolioUpdateDto portfolio);
         public void AddPortfolio(PortfolioCreateDto portfolio);
+
+        public void DeletePortfolio(Guid id);
     }
 }
