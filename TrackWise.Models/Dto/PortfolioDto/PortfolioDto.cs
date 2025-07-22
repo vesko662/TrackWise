@@ -8,7 +8,7 @@ namespace TrackWise.Models.Dto.PortfolioDto
 {
     public class PortfolioDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; } 
         public string CurrencyCode { get; set; }
 

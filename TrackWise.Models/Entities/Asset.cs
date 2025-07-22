@@ -11,7 +11,7 @@ namespace TrackWise.Models.Entities
     public class Asset
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         [Required]
         public string Symbol { get; set; }
         [Required]
@@ -22,7 +22,7 @@ namespace TrackWise.Models.Entities
         public AssetIdentifierType IdentifierType { get; set; }
         [Required]
         public string IdentifierValue { get; set; } = null!;
-        public Guid ExchangeId { get; set; }
+        public string ExchangeId { get; set; }
         public Exchange Exchange { get; set; }
 
 

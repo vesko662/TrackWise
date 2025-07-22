@@ -10,14 +10,18 @@ namespace TrackWise.Models.Entities
     public class Portfolio
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         [Required]
         public string Name { get; set; }
-        public Guid CurrencyId { get; set; }
+        public string CurrencyId { get; set; }
         public Currency Currency { get; set; } = null!;
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         public ICollection<Holding> Holdings { get; set; } = new List<Holding>();
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

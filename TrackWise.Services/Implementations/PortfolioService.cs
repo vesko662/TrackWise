@@ -31,18 +31,18 @@ namespace TrackWise.Services.Implementations
             portfolioRep.Save();
         }
 
-        public void DeletePortfolio(Guid id)
+        public void DeletePortfolio(string id)
         {
             portfolioRep.Delete(portfolioRep.Get(x => x.Id == id));
             portfolioRep.Save();
         }
 
-        public PortfolioDto GetPortfolio(Guid id)
+        public PortfolioDto GetPortfolio(string id)
         {
             return mapper.Map<PortfolioDto>(portfolioRep.Get(x => x.Id == id));
         }
 
-        public PortfolioUpdateDto GetPortfolioForEdit(Guid id)
+        public PortfolioUpdateDto GetPortfolioForEdit(string id)
         {
             return mapper.Map<PortfolioUpdateDto>(portfolioRep.Get(x => x.Id == id));
         }

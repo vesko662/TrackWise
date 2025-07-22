@@ -8,7 +8,7 @@ namespace TrackWise.Models.Dto.CurrencyDto
 {
     public class CurrencyDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string Code { get; set; }
     }

@@ -11,8 +11,8 @@ namespace TrackWise.Models.Dto.TransactionDtos
 {
     public class TransactionCreateDto
     {
-        public Guid PortfolioId { get; set; }
-        public Guid AssetId { get; set; }
+        public string PortfolioId { get; set; }
+        public string AssetId { get; set; }
         public TransactionType Type { get; set; }
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }

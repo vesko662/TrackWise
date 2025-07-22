@@ -4,7 +4,7 @@ namespace TrackWise.Web.Controllers
 {
     public class PortfolioDashboardController : Controller
     {
-        public IActionResult Index(Guid Id)
+        public IActionResult Index(string Id)
         {
             ViewBag.Id =Id;
             return View();

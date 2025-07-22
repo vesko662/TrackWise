@@ -10,7 +10,7 @@ namespace TrackWise.Models.Entities
     {
         [Key]
         public int Id { get; set; }
-        public Guid AssetId { get; set; }
+        public string AssetId { get; set; }
         public Asset Asset { get; set; } = null!;
         public DateTime Date { get; set; }
         [Required]

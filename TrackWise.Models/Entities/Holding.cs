@@ -10,12 +10,12 @@ namespace TrackWise.Models.Entities
     public class Holding
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        public Guid PortfolioId { get; set; }
+        public string PortfolioId { get; set; }
         public Portfolio Portfolio { get; set; }
 
-        public Guid AssetId { get; set; }
+        public string AssetId { get; set; }
         public Asset Asset { get; set; }
 
         [Required]

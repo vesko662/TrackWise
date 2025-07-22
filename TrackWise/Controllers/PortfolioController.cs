@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TrackWise.Models.Dto.PortfolioDto;
 using TrackWise.Services.Interfaces;
 
 namespace TrackWise.Web.Controllers
 {
+    [Authorize]
     public class PortfolioController : Controller
     {
         private readonly IPortfolioService portfolioService;
@@ -56,7 +58,7 @@ namespace TrackWise.Web.Controllers
         }
 
 
-        public IActionResult Settings(Guid id)
+        public IActionResult Settings(string id)
         {
             LoadCurrencies();
             return View(portfolioService.GetPortfolioForEdit(id));
@@ -75,7 +77,7 @@ namespace TrackWise.Web.Controllers
         }
 
       [HttpPost]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(string id)
         {
             portfolioService.DeletePortfolio(id);
             return RedirectToAction("Index");

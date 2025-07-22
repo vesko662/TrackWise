@@ -10,7 +10,7 @@ namespace TrackWise.Models.Entities
     public class Currency
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         [Required]
         public string Name { get; set; }
         [Required]

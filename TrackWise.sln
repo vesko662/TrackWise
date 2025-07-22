@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6 d17.14
+VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackWise.Web", "TrackWise\TrackWise.Web.csproj", "{29480F36-16A4-4044-B044-D2EC059ABAC3}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackWise.Services", "TrackWise.Services\TrackWise.Services.csproj", "{5AEDF630-EAB1-4651-8684-64627AAB2E6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackWise.Models", "TrackWise.Models\TrackWise.Models.csproj", "{18938174-D88E-4E93-A3C2-83FD0BC67437}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackWise.Common", "TrackWise.Utility\TrackWise.Common.csproj", "{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{18938174-D88E-4E93-A3C2-83FD0BC67437}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18938174-D88E-4E93-A3C2-83FD0BC67437}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18938174-D88E-4E93-A3C2-83FD0BC67437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
