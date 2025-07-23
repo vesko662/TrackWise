@@ -1,23 +1,32 @@
-﻿    @model TransactionCreateDto
+﻿@model TransactionCreateDto
 
-    <div class="porfolioContaner mt-4">
+@{
+    ViewData["Title"] = "Add Transaction";
+}
+
+<link rel="stylesheet" href="~/css/transaction.css" asp-append-version="true" />
+
+<div class="porfolioContaner">
+    <div class="transaction-form">
         <h4 class="mb-4">Add Transaction</h4>
         <form asp-action="Create" method="post">
+            <input asp-for="PortfolioId" type="hidden" />
+
             <div class="mb-3">
-                <label asp-for="AssetId" class="form-label">Asset</label>
-                <select asp-for="AssetId" asp-items="ViewBag.Assets" class="form-select select2"></select>
-                <span asp-validation-for="AssetId" class="text-danger"></span>
+                <label class="form-label">Transaction Type</label>
+                <div class="btn-group w-100" role="group" aria-label="Transaction Type">
+                    <input type="radio" class="btn-check" name="Type" id="buy" value="0" autocomplete="off" checked>
+                    <label class="btn btn-outline-success" for="buy">Buy</label>
+
+                    <input type="radio" class="btn-check" name="Type" id="sell" value="1" autocomplete="off">
+                    <label class="btn btn-outline-danger" for="sell">Sell</label>
+                </div>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Type" class="form-label">Transaction Type</label>
-                <select asp-for="Type" class="form-select">
-                    @foreach (var type in Enum.GetValues(typeof(TransactionType)))
-                    {
-                        <option value="@type">@type</option>
-                    }
-                </select>
-                <span asp-validation-for="Type" class="text-danger"></span>
+                <label asp-for="AssetId" class="form-label">Asset</label>
+                <select id="AssetId" name="AssetId" class="form-select select2-ajax"></select>
+                <span asp-validation-for="AssetId" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
@@ -44,12 +53,32 @@
             </div>
         </form>
     </div>
+</div>
 
-    @* @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-        <script>
-            $(document).ready(function () {
-                $('.select2').select2();
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('.select2-ajax').select2({
+                placeholder: 'Search assets...',
+                ajax: {
+                    url: '/api/assets/search',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { query: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return { id: item.id, text: item.name };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1
             });
-        </script>
-    } *@
+        });
+    </script>
+}

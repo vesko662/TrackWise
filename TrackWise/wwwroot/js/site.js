@@ -1,4 +1,20 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function setTransactionType(value) {
+    document.querySelector('[name="Type"]').value = value;
 
-// Write your JavaScript code.
+    const buyBtn = document.getElementById("btnBuy");
+    const sellBtn = document.getElementById("btnSell");
+
+    buyBtn.classList.remove("active-buy");
+    sellBtn.classList.remove("active-sell");
+
+    if (value == 0) {
+        buyBtn.classList.add("active-buy");
+    } else {
+        sellBtn.classList.add("active-sell");
+    }
+}
+
+window.onload = () => {
+    const selected = parseInt(document.querySelector('[name="Type"]').value || 0);
+    setTransactionType(selected);
+};

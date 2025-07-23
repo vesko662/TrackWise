@@ -9,38 +9,16 @@ namespace TrackWise.Models.Enums
 {
     public enum AssetType
     {
-
         [Display(Name = "Stock")]
         Stock = 1,
 
         [Display(Name = "Cryptocurrency")]
         Crypto = 2,
 
-        [Display(Name = "Exchange Traded Fund")]
+        [Display(Name = "ETF")]
         ETF = 3,
 
-        [Display(Name = "Mutual Fund")]
-        Fund = 4,
-
-        [Display(Name = "Bond")]
-        Bond = 5,
-
-        [Display(Name = "Commodity")]
-        Commodity = 6,
-
-        [Display(Name = "Index")]
-        Index = 7,
-
-        [Display(Name = "Real Estate Investment Trust")]
-        REIT = 8,
-
         [Display(Name = "Currency (Fiat)")]
-        FiatCurrency = 9,
-
-        [Display(Name = "Option")]
-        Option = 10,
-
-        [Display(Name = "Futures Contract")]
-        Futures = 11
+        FiatCurrency = 4,
     }
 }

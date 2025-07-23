@@ -10,15 +10,15 @@ namespace TrackWise.Services.Interfaces
 {
     public interface IPortfolioService
     {
-       public IEnumerable<PortfolioDto> GetPortfolios();
+       public IEnumerable<PortfolioDto> GetPortfolios(string userId);
 
-        public PortfolioDto GetPortfolio(string id);
+        public PortfolioDto GetPortfolio(string id, string userId);
 
-        public PortfolioUpdateDto GetPortfolioForEdit(string id);
+        public PortfolioUpdateDto GetPortfolioForEdit(string id, string userId);
 
-        public void UpdatePortfolio(PortfolioUpdateDto portfolio);
-        public void AddPortfolio(PortfolioCreateDto portfolio);
+        public void UpdatePortfolio(PortfolioUpdateDto portfolio, string userId);
+        public void AddPortfolio(PortfolioCreateDto portfolio, string userId);
 
-        public void DeletePortfolio(string id);
+        public void DeletePortfolio(string id, string userId);
     }
 }

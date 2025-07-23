@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackWise.Models", "TrackWi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackWise.Common", "TrackWise.Utility\TrackWise.Common.csproj", "{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrackWise.Seeding", "TrackWise.Seeding\TrackWise.Seeding.csproj", "{4C486069-EE8A-401D-8FB8-989375C34444}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F32A87E-E9EE-40D5-BF6F-DA26E47A28B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C486069-EE8A-401D-8FB8-989375C34444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C486069-EE8A-401D-8FB8-989375C34444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C486069-EE8A-401D-8FB8-989375C34444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C486069-EE8A-401D-8FB8-989375C34444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

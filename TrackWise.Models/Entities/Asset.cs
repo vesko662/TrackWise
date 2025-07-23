@@ -18,10 +18,6 @@ namespace TrackWise.Models.Entities
         public string Name { get; set; }
         [Required]
         public AssetType Type { get; set; }
-        [Required]
-        public AssetIdentifierType IdentifierType { get; set; }
-        [Required]
-        public string IdentifierValue { get; set; } = null!;
         public string ExchangeId { get; set; }
         public Exchange Exchange { get; set; }
 
