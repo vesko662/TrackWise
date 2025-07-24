@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TrackWise.Models.Dto.ApiResponse;
+using TrackWise.Models.Dto.AssetDtos;
 using TrackWise.Models.Dto.CurrencyDto;
 using TrackWise.Models.Dto.PortfolioDto;
 using TrackWise.Models.Entities;
+using TrackWise.Models.Enums;
 
 namespace TrackWise.Services.Mapping
 {
@@ -24,6 +27,11 @@ namespace TrackWise.Services.Mapping
 
             // Currency mappings
             CreateMap<Currency, CurrencyDto>();
+
+            //Asset mapping
+            CreateMap<FmpSymbolResponse, AssetSeedDto>()
+                .ForMember(dest => dest.Type, opt => opt
+                    .MapFrom(src => src.Type == "stock" ? AssetType.Stock : AssetType.ETF));
 
         }
     }

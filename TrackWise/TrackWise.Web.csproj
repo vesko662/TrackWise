@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TrackWise.Database\TrackWise.Database.csproj" />
     <ProjectReference Include="..\TrackWise.Models\TrackWise.Models.csproj" />
+    <ProjectReference Include="..\TrackWise.Seeding\TrackWise.Seeding.csproj" />
     <ProjectReference Include="..\TrackWise.Services\TrackWise.Services.csproj" />
     <ProjectReference Include="..\TrackWise.Utility\TrackWise.Common.csproj" />
   </ItemGroup>

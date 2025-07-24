@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TrackWise.Database\TrackWise.Database.csproj" />
+    <ProjectReference Include="..\TrackWise.Services\TrackWise.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TrackWise.Seeding.Seeders
 {
-    internal class PriceSeeder : ISeeder
+    public class PriceSeeder : ISeeder
     {
         public Task SeedAsync()
         {

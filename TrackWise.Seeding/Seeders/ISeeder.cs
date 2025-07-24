@@ -8,7 +8,7 @@ namespace TrackWise.Seeding.Seeders
 {
     public interface ISeeder
     {
-        Task<bool> ShouldRunAsync();
-        Task SeedAsync();
+        public Task<bool> ShouldRunAsync();
+        public Task SeedAsync();
     }
 }

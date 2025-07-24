@@ -40,9 +40,6 @@ namespace TrackWise.Database
                 .Property(t => t.Type)
                 .HasConversion<string>();
 
-            modelBuilder.Entity<Asset>()
-                .Property(a => a.IdentifierType)
-                .HasConversion<string>();
 
             modelBuilder.Entity<Currency>().HasData(
                  new Currency
