@@ -49,7 +49,7 @@ namespace TrackWise.Services.Implementations
 
         public IEnumerable<PortfolioDto> GetPortfolios(string userId)
         {
-            return portfolioRep.GetAll().Where(x=>x.UserId==userId).Select(s => mapper.Map<PortfolioDto>(s)).ToList();
+            return portfolioRep.GetAll().Where(x=>x.UserId==userId).Select(mapper.Map<PortfolioDto>).ToList();
         }
 
         public void UpdatePortfolio(PortfolioUpdateDto portfolio, string userId)

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using TrackWise.Database.Repository.Interface;
@@ -28,7 +29,7 @@ namespace TrackWise.Database.Repository
             dbSet.Remove(entity);
         }
 
-        public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter)
+        public T Get(Expression<Func<T, bool>> filter)
         {
             IQueryable<T> query = dbSet.Where(filter);
             return query.FirstOrDefault();
@@ -41,9 +42,19 @@ namespace TrackWise.Database.Repository
             return query.ToList();
         }
 
+        public IEnumerable<T> GetWhere(Expression<Func<T, bool>> filter)
+        {
+            IQueryable<T> query = dbSet.Where(filter);
+            return query.ToList();
+        }
+
         public void Save()
         {
             db.SaveChanges();
+        }
+        public async Task SaveAsync()
+        {
+           await db.SaveChangesAsync();
         }
 
         public void Update(T entity)

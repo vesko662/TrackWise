@@ -9,6 +9,6 @@ namespace TrackWise.Services.Interfaces
 {
     public interface ICoinGeckoService
     {
-        public Task<IEnumerable<AssetDto>> GetCryptoListAsync();
+        public Task<IEnumerable<AssetSeedDto>> GetCryptoListAsync();
     }
 }

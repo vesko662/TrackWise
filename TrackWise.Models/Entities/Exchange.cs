@@ -13,10 +13,6 @@ namespace TrackWise.Models.Entities
         public string Id { get; set; } = Guid.NewGuid().ToString();
         [Required]
         public string Name { get; set; }
-        [Required]
-        public string Code { get; set; }
-        [Required]
-        public string Country {  get; set; }
 
         public ICollection<Asset> Assets { get; set; } = new List<Asset>();
     }

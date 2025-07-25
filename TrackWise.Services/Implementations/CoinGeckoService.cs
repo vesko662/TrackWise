@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
+using TrackWise.Models.Dto.ApiResponse;
 using TrackWise.Models.Dto.AssetDtos;
 using TrackWise.Services.Interfaces;
 
@@ -17,17 +14,35 @@ namespace TrackWise.Services.Implementations
         private readonly string baseUrl;
         private readonly string apiKey;
 
-        public CoinGeckoService (HttpClient httpClient, IConfiguration configuration,IMapper mapper)
+        public CoinGeckoService(HttpClient httpClient, IConfiguration configuration, IMapper mapper)
         {
             this.httpClient = httpClient;
-            baseUrl = configuration["FmpApi:BaseUrl"];
-            apiKey = configuration["FmpApi:ApiKey"]; 
+            baseUrl = configuration["CoinGeckoApi:BaseUrl"];
+            apiKey = configuration["CoinGeckoApi:ApiKey"];
             this.mapper = mapper;
         }
 
-        public Task<IEnumerable<AssetDto>> GetCryptoListAsync()
+        public async Task<IEnumerable<AssetSeedDto>> GetCryptoListAsync()
         {
-            return (Task<IEnumerable<AssetDto>>)Task.CompletedTask;
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{baseUrl}/coins/list"),
+                Headers =
+                {
+                    { "accept", "application/json" },
+                    { "x-cg-demo-api-key", apiKey },
+                },
+            };
+            using (var response = await httpClient.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+
+                var coins =  JsonSerializer.Deserialize<IEnumerable<CoinGeckoResponse>>(body,  new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                return coins.Select(mapper.Map<AssetSeedDto>).ToList();
+            }
         }
     }
 }

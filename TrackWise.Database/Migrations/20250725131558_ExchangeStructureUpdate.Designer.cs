@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrackWise.Database;
 
@@ -11,9 +12,11 @@ using TrackWise.Database;
 namespace TrackWise.Database.Migrations
 {
     [DbContext(typeof(TrackWiseDbContext))]
-    partial class TrackWiseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250725131558_ExchangeStructureUpdate")]
+    partial class ExchangeStructureUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

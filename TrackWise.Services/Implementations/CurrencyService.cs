@@ -21,7 +21,7 @@ namespace TrackWise.Services.Implementations
         }
         public IEnumerable<CurrencyDto> GetAll()
         {
-           return currencyRepository.GetAll().Select(s=>mapper.Map<CurrencyDto>(s)).ToList();
+           return currencyRepository.GetAll().Select(mapper.Map<CurrencyDto>).ToList();
         }
     }
 }

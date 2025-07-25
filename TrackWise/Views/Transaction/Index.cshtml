@@ -58,7 +58,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        $(document).ready(function () {
+        $(function () {
             $('.select2-ajax').select2({
                 placeholder: 'Search assets...',
                 ajax: {
@@ -69,11 +69,7 @@
                         return { query: params.term };
                     },
                     processResults: function (data) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return { id: item.id, text: item.name };
-                            })
-                        };
+                        return { results: data };
                     },
                     cache: true
                 },
@@ -81,4 +77,5 @@
             });
         });
     </script>
+}
 }

@@ -15,6 +15,12 @@ namespace TrackWise.Database.Repository
         {
         }
 
+        public async Task AddRangeAsync(IEnumerable<Asset> assets)
+        {
+           await dbSet.AddRangeAsync(assets);
+           await SaveAsync();
+        }
+
         public async Task<bool> AnyAsync() => await dbSet.AnyAsync();
     }
 }

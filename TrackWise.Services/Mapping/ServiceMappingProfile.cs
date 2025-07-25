@@ -28,10 +28,15 @@ namespace TrackWise.Services.Mapping
             // Currency mappings
             CreateMap<Currency, CurrencyDto>();
 
-            //Asset mapping
+            //Asset mappings
             CreateMap<FmpSymbolResponse, AssetSeedDto>()
                 .ForMember(dest => dest.Type, opt => opt
                     .MapFrom(src => src.Type == "stock" ? AssetType.Stock : AssetType.ETF));
+
+            CreateMap<CoinGeckoResponse, AssetSeedDto>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => AssetType.Crypto));
+
+            CreateMap<Asset,AssetDto>();
 
         }
     }

@@ -3,7 +3,8 @@ using TrackWise.Services.Interfaces;
 
 namespace TrackWise.Web.Controllers
 {
-    public class AssetsController : ControllerBase
+    [Route("api/assets")]
+    public class AssetsController : Controller
     {
         private readonly IAssetService assetService;
 
@@ -16,7 +17,7 @@ namespace TrackWise.Web.Controllers
         public IActionResult SearchAssets(string query)
         {
             var results = assetService.GetAssetsByQuery(query)
-                .Select(a => new { id = a.Id, name = a.Name })
+                .Select(a => new { id = a.Id, text = a.Name })
                 .ToList();
 
             return Ok(results);

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using TrackWise.Database;
 using TrackWise.Database.Repository;
 using TrackWise.Database.Repository.Interface;
+using TrackWise.Models.Entities;
 using TrackWise.Seeding;
 using TrackWise.Seeding.Seeders;
 using TrackWise.Services.Implementations;
@@ -29,12 +30,13 @@ builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 
+builder.Services.AddScoped<IExchangeRepository, ExchangeRepository>();
+
 builder.Services.AddHttpClient<IFmpService, FmpService>();
 builder.Services.AddHttpClient<ICoinGeckoService, CoinGeckoService>();
 
-
+builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.AddTransient<ISeeder, AssetSeeder>();
-builder.Services.AddTransient<ISeeder, PriceSeeder>();
 builder.Services.AddTransient<SeederRunner>();
 
 builder.Services.AddRazorPages();
