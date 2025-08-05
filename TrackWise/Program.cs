@@ -39,6 +39,9 @@ builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.AddTransient<ISeeder, AssetSeeder>();
 builder.Services.AddTransient<SeederRunner>();
 
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(cfg => { },
     typeof(ServiceMappingProfile).Assembly);

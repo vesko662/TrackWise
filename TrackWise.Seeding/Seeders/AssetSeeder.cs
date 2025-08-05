@@ -37,7 +37,7 @@ namespace TrackWise.Seeding.Seeders
 
             var exchangeNames = stockAndEtf.GroupBy(x => x.Exchange).Select(x => x.Key).Select(x => x is null ? "noName" : x).ToList();
             var exchanges = exchangeNames.Select(x => new Exchange() { Name = x }).ToList();
-            var cryptoExch = new Exchange() { Name = "ForCrypto" };
+            var cryptoExch = new Exchange() { Name = "Crypto Market" };
             exchange.Add(cryptoExch);
             if (exchanges.Any())
             {
@@ -47,9 +47,12 @@ namespace TrackWise.Seeding.Seeders
             {
                 Name = x.Name,
                 Symbol = x.Symbol,
-                ExchangeId = exchanges.Where(x => x.Name == x.Name).First().Id,
+                ExchangeId = exchanges
+        .First(e => e.Name == (x.Exchange ?? "noName"))
+        .Id,
                 Type = x.Type,
             }).ToList();
+
 
             var cryptoParsed = crypto.Select(x => new Asset()
             {

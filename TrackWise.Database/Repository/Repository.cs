@@ -42,7 +42,7 @@ namespace TrackWise.Database.Repository
             return query.ToList();
         }
 
-        public IEnumerable<T> GetWhere(Expression<Func<T, bool>> filter)
+        public virtual IEnumerable<T>  GetWhere(Expression<Func<T, bool>> filter)
         {
             IQueryable<T> query = dbSet.Where(filter);
             return query.ToList();

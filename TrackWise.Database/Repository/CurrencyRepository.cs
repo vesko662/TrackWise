@@ -10,10 +10,8 @@ namespace TrackWise.Database.Repository
 {
     public class CurrencyRepository : Repository<Currency>, ICurrencyRepository
     {
-        private TrackWiseDbContext db;
         public CurrencyRepository(TrackWiseDbContext db) : base(db)
         {
-            this.db = db;
         }
 
     }

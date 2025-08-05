@@ -11,10 +11,8 @@ namespace TrackWise.Database.Repository
 {
     public class PortfolioRepository : Repository<Portfolio>, IPortfolioRepository
     {
-        private TrackWiseDbContext db;
         public PortfolioRepository(TrackWiseDbContext db) : base(db)
         {
-            this.db = db;
         }
 
         public override IEnumerable<Portfolio> GetAll()

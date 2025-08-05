@@ -14,10 +14,10 @@ namespace TrackWise.Web.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult SearchAssets(string query)
+        public IActionResult SearchAssets(string query,string? type)
         {
-            var results = assetService.GetAssetsByQuery(query)
-                .Select(a => new { id = a.Id, text = a.Name })
+            var results = assetService.GetAssetsByQuery(query,type)
+                .Select(a => new { id = a.Id, text = $"{a.Name} ({a.Symbol}) - {a.ExchangeName}" })
                 .ToList();
 
             return Ok(results);
