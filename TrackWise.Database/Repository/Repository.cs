@@ -56,7 +56,10 @@ namespace TrackWise.Database.Repository
         {
            await db.SaveChangesAsync();
         }
-
+        public void AddRange(IEnumerable<T> entities)
+        {
+            dbSet.AddRange(entities);
+        }
         public void Update(T entity)
         {
             db.Update(entity);

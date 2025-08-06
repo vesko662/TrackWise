@@ -26,7 +26,7 @@ namespace TrackWise.Web.Controllers
                 return View("Index", transaction);
             }
             transactionService.AddTransaction(transaction);
-           return RedirectToAction("Index", "PortfolioDashboard", new { portfolioId = transaction.PortfolioId });
+           return RedirectToAction("Index", "PortfolioDashboard", new { Id = transaction.PortfolioId });
         }
     }
 }

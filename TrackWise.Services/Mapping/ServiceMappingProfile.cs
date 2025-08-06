@@ -8,6 +8,7 @@ using TrackWise.Models.Dto.ApiResponse;
 using TrackWise.Models.Dto.AssetDtos;
 using TrackWise.Models.Dto.CurrencyDto;
 using TrackWise.Models.Dto.PortfolioDto;
+using TrackWise.Models.Dto.PriceDto;
 using TrackWise.Models.Dto.TransactionDtos;
 using TrackWise.Models.Entities;
 using TrackWise.Models.Enums;
@@ -43,6 +44,9 @@ namespace TrackWise.Services.Mapping
             //Transaction mappings
             CreateMap<TransactionCreateDto, Transaction>();
 
+            //Price mapping
+            CreateMap<FmpHistoricalPrice, PriceDto>()
+                .ForMember(dest=>dest.HistoryPrice,opt=>opt.MapFrom(src=>src.Close));
         }
     }
 }

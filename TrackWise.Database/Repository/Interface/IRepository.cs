@@ -17,6 +17,7 @@ namespace TrackWise.Database.Repository.Interface
         public void Add(T entity);
         public void Update(T entity);
         public void Delete(T entity);
+        void AddRange(IEnumerable<T> entities);
         public void Save();
         public Task SaveAsync();
     }

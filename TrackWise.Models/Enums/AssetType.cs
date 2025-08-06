@@ -18,7 +18,7 @@ namespace TrackWise.Models.Enums
         [Display(Name = "ETF")]
         ETF = 3,
 
-        [Display(Name = "Currency (Fiat)")]
-        FiatCurrency = 4,
+        //[Display(Name = "Currency (Fiat)")]
+        //FiatCurrency = 4,
     }
 }

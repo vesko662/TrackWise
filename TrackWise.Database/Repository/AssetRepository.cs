@@ -29,5 +29,11 @@ namespace TrackWise.Database.Repository
         }
 
         public async Task<bool> AnyAsync() => await dbSet.AnyAsync();
+
+        public Asset GetAssetById(string assetId)
+        {
+            return dbSet.FirstOrDefault(x => x.Id == assetId);
+        }
+
     }
 }

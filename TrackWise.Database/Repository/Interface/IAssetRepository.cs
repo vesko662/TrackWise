@@ -15,6 +15,6 @@ namespace TrackWise.Database.Repository.Interface
 
         public Task AddRangeAsync(IEnumerable<Asset> assets);
 
-        
+        Asset GetAssetById(string assetId);
     }
 }
