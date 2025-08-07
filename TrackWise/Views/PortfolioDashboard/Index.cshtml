@@ -1,11 +1,88 @@
-﻿
+﻿@model PortfolioDashboardViewModel
+
 <div class="d-flex justify-content-end align-items-center mb-4 gap-2">
-    <a asp-controller="Transaction" asp-action="Index" asp-route-portfolioId="@ViewBag.Id" class="btn  d-flex align-items-center gap-2">
+    <a asp-controller="Transaction" asp-action="Index" asp-route-portfolioId="@ViewBag.Id" class="btn d-flex align-items-center gap-2">
         <i class="bi bi-plus-circle-fill"></i>
         Add trades
     </a>
-    <a asp-controller="Portfolio" asp-action="Settings" asp-route-id="@ViewBag.Id" class="btn  d-flex align-items-center gap-2">
+    <a asp-controller="Portfolio" asp-action="Settings" asp-route-id="@ViewBag.Id" class="btn d-flex align-items-center gap-2">
         <i class="bi bi-gear-fill"></i>
         Settings
     </a>
 </div>
+
+<div class="mb-4">
+    <h2 class="mb-3">Portfolio Overview</h2>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Total Value</h6>
+                <h4 class="fw-bold">@Model.TotalValue.ToString("C2")</h4>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Annual Return</h6>
+                <h4 class="fw-bold">@Model.AnnualReturn.ToString("P2")</h4>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Annual Profit</h6>
+                <h4 class="fw-bold">@Model.AnnualProfit.ToString("C2")</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-4">
+    <h2 class="mb-3">Performance Chart</h2>
+    <canvas id="portfolioChart" height="100"></canvas>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('portfolioChart');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.ChartLabels)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.ChartValues)),
+                    label: 'Portfolio Value',
+                    fill: true,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.raw;
+                                return '$' + value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TrackWise.Models.Dto.PortfolioDashboard;
 
 namespace TrackWise.Web.Controllers
 {
@@ -9,7 +10,7 @@ namespace TrackWise.Web.Controllers
         public IActionResult Index(string Id)
         {
             ViewBag.Id =Id;
-            return View();
+            return View(new PortfolioDashboardViewModel());
         }
     }
 }
