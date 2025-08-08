@@ -47,6 +47,8 @@ builder.Services.AddScoped<IPriceService, PriceService>();
 
 builder.Services.AddScoped<IHoldingRepository, HoldingRepository>();    
 
+builder.Services.AddScoped<IPortfolioDashboardService, PortfolioDashboardService>();
+
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(cfg => { },
     typeof(ServiceMappingProfile).Assembly);

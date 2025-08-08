@@ -14,12 +14,8 @@ namespace TrackWise.Models.Dto.PortfolioDashboard
         public decimal AnnualReturn { get; set; }
         public decimal AnnualProfit { get; set; }
 
-        public List<string> ChartLabels { get; set; } = new List<string>();
-        public List<decimal> ChartValues { get; set; } = new List<decimal>();
-
-        public string ViewMode { get; set; } 
-        public string SelectedPeriod { get; set; }
-        public List<string> AvailablePeriods { get; set; } = new() { "From the beginning"};
+        public List<string> ChartLabels { get; set; } = new();
+        public List<decimal> ChartValues { get; set; } = new();
 
     }
 }

@@ -37,52 +37,104 @@
 
 <div class="mb-4">
     <h2 class="mb-3">Performance Chart</h2>
+
+    <div class="d-flex align-items-center gap-3 mb-2">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="logToggle">
+            <label class="form-check-label" for="logToggle">Log scale</label>
+        </div>
+    </div>
+
     <canvas id="portfolioChart" height="100"></canvas>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <script>
-        const ctx = document.getElementById('portfolioChart');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: @Html.Raw(Json.Serialize(Model.ChartLabels)),
-                datasets: [{
-                    data: @Html.Raw(Json.Serialize(Model.ChartValues)),
-                    label: 'Portfolio Value',
-                    fill: true,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    tension: 0.4
-                }]
+        const labels = @Html.Raw(Json.Serialize(Model.ChartLabels));
+        const values = @Html.Raw(Json.Serialize(Model.ChartValues));
+
+        const fmtCurrency = (n) => {
+          try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:2}).format(n); }
+          catch { return '$' + Number(n).toLocaleString(undefined,{maximumFractionDigits:2}); }
+        };
+
+        const ctxEl = document.getElementById('portfolioChart');
+        const ctx = ctxEl.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(30, 136, 229, 0.25)');
+        gradient.addColorStop(1, 'rgba(30, 136, 229, 0)');
+
+        const pos = values.filter(v => v > 0);
+        const linSuggestedMin = pos.length ? Math.min(...pos) * 0.98 : 0;
+        const linSuggestedMax = values.length ? Math.max(...values) * 1.02 : 1;
+
+        function toLogData(arr) {
+          return arr.map(v => (v > 0 ? v : null));
+        }
+        function minPositive(arr) {
+          const p = arr.filter(v => v > 0);
+          return p.length ? Math.min(...p) : 1;
+        }
+
+        const chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Portfolio Value',
+              data: values,
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.35,
+              borderColor: '#1e88e5',
+              backgroundColor: gradient,
+              fill: true,
+              yAxisID: 'y'
+            }]
+          },
+          options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: (c) => fmtCurrency(c.raw) } }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let value = context.raw;
-                                return '$' + value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        min: 0,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
-                            }
-                        }
-                    }
-                }
+            scales: {
+              y: {
+                type: 'linear',
+                beginAtZero: false,
+                suggestedMin: linSuggestedMin,
+                suggestedMax: linSuggestedMax,
+                ticks: { callback: (v) => fmtCurrency(v) },
+                grid: { color: 'rgba(0,0,0,0.05)' }
+              },
+              x: { ticks: { maxRotation: 0, autoSkip: true }, grid: { display: false } }
             }
+          }
+        });
+
+        document.getElementById('logToggle')?.addEventListener('change', (e) => {
+          const useLog = e.target.checked;
+
+          if (useLog) {
+            chart.options.scales.y.type = 'logarithmic';
+            chart.options.scales.y.min = Math.max(1, Math.floor(minPositive(values))); 
+            chart.options.scales.y.suggestedMin = undefined;
+            chart.options.scales.y.suggestedMax = undefined;
+            chart.data.datasets[0].data = toLogData(values); 
+          } else {
+            chart.options.scales.y.type = 'linear';
+            chart.options.scales.y.min = undefined;
+            chart.options.scales.y.suggestedMin = linSuggestedMin;
+            chart.options.scales.y.suggestedMax = linSuggestedMax;
+            chart.data.datasets[0].data = values;
+          }
+
+          chart.update();
         });
     </script>
 }
+
+
+

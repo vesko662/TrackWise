@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,12 +33,13 @@ namespace TrackWise.Database.Repository
 
         public decimal GetLatestPrice(string assetId)
         {
-            return dbSet
-                .Where(p => p.AssetId == assetId)
-                .OrderByDescending(p => p.Date)
-                .Select(p => p.HistoryPrice)
-                .DefaultIfEmpty(0m)
-                .First();
+            var price = dbSet
+          .Where(p => p.AssetId == assetId)
+          .OrderByDescending(p => p.Date)
+          .Select(p => (decimal?)p.HistoryPrice) 
+          .FirstOrDefault();
+
+            return price ?? 0m;
         }
     }
 }
