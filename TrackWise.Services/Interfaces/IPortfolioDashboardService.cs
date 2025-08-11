@@ -9,6 +9,10 @@ namespace TrackWise.Services.Interfaces
 {
     public interface IPortfolioDashboardService
     {
-        public PortfolioDashboardViewModel BuildData(string portfolioId);
+        public PortfolioDashboardChartData BuildChartData(string portfolioId);
+        public IEnumerable<PortfolioDashboardHoldingData> BuildHoldingData(string portfolioId); 
+
+        public PortfolioDashboardTransactionData BuildTransactionData(string portfolioId);
+        public PortfolioDashboardAssetClassesData BuildAssetClassesData(string portfolioId);
     }
 }

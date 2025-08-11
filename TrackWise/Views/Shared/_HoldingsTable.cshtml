@@ -1,0 +1,115 @@
+﻿@model IEnumerable<PortfolioDashboardHoldingData>
+
+<div class="card shadow-sm holdings-card">
+    <div class="card-body">
+        <h4 class="mb-3">Holdings</h4>
+
+        <div class="table-responsive">
+            <table class="table table-borderless align-middle holdings-table">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase small fw-semibold text-secondary">Security</th>
+                        <th class="text-uppercase small fw-semibold text-secondary text-center">
+                            Position<br><span class="subhead">Holding<br />period</span>
+                        </th>
+                        <th class="text-uppercase small fw-semibold text-secondary text-end">
+                            Cumulative<br />cashflow<br /><span class="subhead">per share</span>
+                        </th>
+                        <th class="text-uppercase small fw-semibold text-secondary text-end">
+                            Value<br />per share
+                        </th>
+                        <th class="text-uppercase small fw-semibold text-secondary text-end">
+                            Price<br />return<br /><span class="subhead">in %</span>
+                        </th>
+                        <th class="text-uppercase small fw-semibold text-secondary text-end">
+                            Net<br />profit/loss<br /><span class="subhead">in %</span>
+                        </th>
+                        <th class="text-uppercase small fw-semibold text-secondary text-end">
+                            Allocation<br /><span class="subhead">%</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        var priceReturnValue = (r.LastPrice - r.CumulativeCashflowPerShare) * r.Quantity;
+                        var netProfitValue = r.MarketValue - r.CumulativeCashflow;
+                        var allocPct = r.AllocationPercent; 
+
+                        <tr class="border-top">
+                            <td>
+                                <div class="fw-semibold">@r.Symbol</div>
+                                <div class="text-muted small">
+                            </td>
+
+                            <td class="text-center">
+                                <div class="fw-semibold">@r.Quantity</div>
+                                <div class="text-muted small">@r.HoldingPeriodDays days</div>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="fw-semibold">@r.CumulativeCashflow.ToString("C2")</div>
+                                <div class="text-muted small">@r.CumulativeCashflowPerShare.ToString("C2")/share</div>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="fw-semibold">@r.MarketValue.ToString("C2")</div>
+                                <div class="text-muted small">@r.LastPrice.ToString("C2")/share</div>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="fw-semibold text-success">
+                                    @priceReturnValue.ToString("C2")
+                                </div>
+                                <div class="text-success small">
+                                    @r.PriceReturnPercent.ToString("P2")
+                                </div>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="fw-semibold @(netProfitValue >= 0 ? "text-success" : "text-danger")">
+                                    @netProfitValue.ToString("C2")
+                                </div>
+                                <div class="small @(r.NetProfitLossPercent >= 0 ? "text-success" : "text-danger")">
+                                    @r.NetProfitLossPercent.ToString("P2")
+                                </div>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="fw-semibold">@allocPct.ToString("P2")</div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .holdings-card {
+        border-radius: 16px;
+    }
+
+    .holdings-table thead th {
+        letter-spacing: .04em;
+    }
+
+    .holdings-table .subhead {
+        text-transform: none;
+        font-weight: 400;
+    }
+
+    .holdings-table tbody tr td {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .holdings-table .text-success {
+        color: #20b26c !important;
+    }
+
+    .holdings-table .text-danger {
+        color: #e04848 !important;
+    }
+</style>

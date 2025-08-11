@@ -27,8 +27,29 @@ namespace TrackWise.Services.Implementations
             this.priceService = priceService;
             this.transactionRepository = transactionRepository;
         }
+        private void UpdatePriceHistory(IEnumerable<string> assetIds)
+        {
+            var end = DateTime.UtcNow.Date;
+            var yesterday = end.AddDays(-1);
+            foreach (var assetId in assetIds)
+            {
+                bool hasPriceYesterday = priceRepository
+                    .GetWhere(p => p.AssetId == assetId &&
+                                   p.Date >= yesterday && p.Date < yesterday.AddDays(1))
+                    .Any();
 
-        public PortfolioDashboardViewModel BuildData(string portfolioId)
+                if (!hasPriceYesterday)
+                {
+                    priceService.AddPriceHistory(assetId);
+                }
+            }
+        }
+        public PortfolioDashboardAssetClassesData BuildAssetClassesData(string portfolioId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PortfolioDashboardChartData BuildChartData(string portfolioId)
         {
             var tx = transactionRepository.GetWhere(t => t.PortfolioId == portfolioId)
                                           .OrderBy(t => t.Created)
@@ -36,7 +57,7 @@ namespace TrackWise.Services.Implementations
 
             if (!tx.Any())
             {
-                return new PortfolioDashboardViewModel
+                return new PortfolioDashboardChartData
                 {
                     PortfolioId = portfolioId,
                     TotalValue = 0m,
@@ -58,18 +79,7 @@ namespace TrackWise.Services.Implementations
                                    .Distinct()
                                    .ToList();
 
-            foreach (var assetId in assetIds)
-            {
-                bool hasPriceYesterday = priceRepository
-                    .GetWhere(p => p.AssetId == assetId &&
-                                   p.Date >= yesterday && p.Date < yesterday.AddDays(1))
-                    .Any();
-
-                if (!hasPriceYesterday)
-                {
-                    priceService.AddPriceHistory(assetId);
-                }
-            }
+            UpdatePriceHistory(assetIds);
 
             var (labels, values) = BuildChartFromTransactions(tx, start, end);
 
@@ -96,7 +106,7 @@ namespace TrackWise.Services.Implementations
             decimal periodReturn = 0m;
             if (invested > 0m && totalValue > 0m)
             {
-                periodReturn = (totalValue - invested) / invested;  
+                periodReturn = (totalValue - invested) / invested;
             }
 
             decimal annualReturn = periodReturn;
@@ -106,7 +116,7 @@ namespace TrackWise.Services.Implementations
             }
 
 
-            return new PortfolioDashboardViewModel
+            return new PortfolioDashboardChartData
             {
                 PortfolioId = portfolioId,
                 TotalValue = totalValue,
@@ -115,6 +125,117 @@ namespace TrackWise.Services.Implementations
                 ChartLabels = labels,
                 ChartValues = values
             };
+        }
+
+        public IEnumerable<PortfolioDashboardHoldingData> BuildHoldingData(
+    string portfolioId)
+        {
+            var result = new List<PortfolioDashboardHoldingData>();
+
+            var holdings = holdingRepository.GetWhere(x => x.PortfolioId == portfolioId).ToList();
+            if (!holdings.Any())
+                return result;
+
+            var assetIds = holdings.Select(h => h.AssetId).Distinct().ToList();
+
+            UpdatePriceHistory(assetIds);
+
+            var lastPrices = priceRepository.GetWhere(p => assetIds.Contains(p.AssetId))
+                .GroupBy(p => p.AssetId)
+                .Select(g => g.OrderByDescending(x => x.Date).First())
+                .ToDictionary(x => x.AssetId, x => x.HistoryPrice);
+
+            var tx = transactionRepository.GetWhere(t => t.PortfolioId == portfolioId && assetIds.Contains(t.AssetId))
+                .OrderBy(t => t.Created)
+                .ToList();
+
+            var totalValue = holdings.Sum(h =>
+            {
+                var lp = lastPrices.TryGetValue(h.AssetId, out var v) ? v : 0m;
+                return h.Quantity * lp;
+            });
+            if (totalValue <= 0m) totalValue = 1m; 
+
+            var today = DateTime.UtcNow.Date;
+
+            foreach (var h in holdings)
+            {
+                var qty = h.Quantity;
+                if (qty <= 0) continue;
+
+                var assetTx = tx.Where(t => t.AssetId == h.AssetId).ToList();
+
+                var cumCash = assetTx.Sum(t =>
+                    (t.Type == TransactionType.Buy ? 1m : -1m) * (t.Quantity * t.Price));
+
+                var last = lastPrices.TryGetValue(h.AssetId, out var lp) ? lp : 0m;
+                var marketValue = qty * last;
+
+                var cfPerShare = qty > 0 ? cumCash / qty : 0m;
+                var priceRetPct = cfPerShare > 0m ? (last / cfPerShare) - 1m : 0m;
+
+                var netPlPct = cumCash > 0m ? (marketValue - cumCash) / cumCash : 0m;
+
+                var holdingStart = GetOldestRemainingLotDateFIFO(assetTx, qty) ?? today;
+                var holdingDays = Math.Max(0, (today - holdingStart).Days);
+
+                    decimal Annualize(decimal r) =>
+                        (holdingDays >= 365 && r > -0.9999m)
+                            ? (decimal)Math.Pow(1.0 + (double)r, 365.0 / holdingDays) - 1m
+                            : r;
+
+                    priceRetPct = Annualize(priceRetPct);
+                    netPlPct = Annualize(netPlPct);
+
+                var alloc = marketValue / totalValue;
+
+                result.Add(new PortfolioDashboardHoldingData
+                {
+                    Symbol = h.Asset.Symbol ,
+                    Quantity = qty,
+                    HoldingPeriodDays = holdingDays,
+                    CumulativeCashflow = cumCash,
+                    CumulativeCashflowPerShare = cfPerShare,
+                    MarketValue = marketValue,
+                    LastPrice = last,
+                    PriceReturnPercent = priceRetPct,
+                    NetProfitLossPercent = netPlPct,
+                    AllocationPercent = alloc
+                });
+            }
+
+            return result.OrderByDescending(x => x.MarketValue).ToList();
+        }
+        private static DateTime? GetOldestRemainingLotDateFIFO(List<Transaction> tx, decimal currentQty)
+        {
+            if (currentQty <= 0) return null;
+            var fifo = new Queue<(DateTime date, decimal qty)>();
+
+            foreach (var t in tx.OrderBy(t => t.Created))
+            {
+                if (t.Type == TransactionType.Buy)
+                    fifo.Enqueue((t.Created.Date, t.Quantity));
+                else
+                {
+                    var toSell = t.Quantity;
+                    while (toSell > 0 && fifo.Count > 0)
+                    {
+                        var (d, q) = fifo.Dequeue();
+                        var used = Math.Min(q, toSell);
+                        var remain = q - used;
+                        if (remain > 0) fifo.Enqueue((d, remain));
+                        toSell -= used;
+                    }
+                }
+            }
+
+            if (fifo.Count == 0) return null;
+            return fifo.Peek().date;
+        }
+
+        public PortfolioDashboardTransactionData BuildTransactionData(string portfolioId)
+        {
+            throw new NotImplementedException();
         }
 
         private (List<string> labels, List<decimal> values) BuildChartFromTransactions(

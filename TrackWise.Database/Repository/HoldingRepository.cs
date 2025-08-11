@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using TrackWise.Database.Repository.Interface;
@@ -28,6 +29,12 @@ namespace TrackWise.Database.Repository
         {
             return dbSet
                 .FirstOrDefault(h => h.PortfolioId == portfolioId && h.AssetId == assetId);
+        }
+
+        public override IEnumerable<Holding> GetWhere(Expression<Func<Holding, bool>> filter)
+        {
+            IQueryable<Holding> query = dbSet.Where(filter).Include(x=>x.Asset);
+            return query.ToList();
         }
     }
 }

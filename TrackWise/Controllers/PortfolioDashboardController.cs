@@ -16,7 +16,10 @@ namespace TrackWise.Web.Controllers
         public IActionResult Index(string Id)
         {
             ViewBag.Id =Id;
-            return View(dashboardService.BuildData(Id));
+            PortfolioDashboardViewModel model = new PortfolioDashboardViewModel();
+            model.ChartData = dashboardService.BuildChartData(Id);
+            model.HoldingData=dashboardService.BuildHoldingData(Id);
+            return View(model);
         }
     }
 }

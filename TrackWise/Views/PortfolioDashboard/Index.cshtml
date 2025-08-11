@@ -15,27 +15,27 @@
     <h2 class="mb-3">Portfolio Overview</h2>
     <div class="row g-3">
         <div class="col-md-4">
-            <div class="card shadow-sm p-3">
+            <div class="card shadow-sm p-3 container">
                 <h6>Total Value</h6>
-                <h4 class="fw-bold">@Model.TotalValue.ToString("C2")</h4>
+                <h4 class="fw-bold">@Model.ChartData.TotalValue.ToString("C2")</h4>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card shadow-sm p-3">
+            <div class="card shadow-sm p-3 container">
                 <h6>Annual Return</h6>
-                <h4 class="fw-bold">@Model.AnnualReturn.ToString("P2")</h4>
+                <h4 class="fw-bold">@Model.ChartData.AnnualReturn.ToString("P2")</h4>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3">
+        <div class="col-md-4 ">
+            <div class="card shadow-sm p-3 container">
                 <h6>Annual Profit</h6>
-                <h4 class="fw-bold">@Model.AnnualProfit.ToString("C2")</h4>
+                <h4 class="fw-bold">@Model.ChartData.AnnualProfit.ToString("C2")</h4>
             </div>
         </div>
     </div>
 </div>
 
-<div class="mb-4">
+<div class="mb-4 container">
     <h2 class="mb-3">Performance Chart</h2>
 
     <div class="d-flex align-items-center gap-3 mb-2">
@@ -48,11 +48,15 @@
     <canvas id="portfolioChart" height="100"></canvas>
 </div>
 
+<div class="container">
+@await Html.PartialAsync("_HoldingsTable", Model.HoldingData)
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <script>
-        const labels = @Html.Raw(Json.Serialize(Model.ChartLabels));
-        const values = @Html.Raw(Json.Serialize(Model.ChartValues));
+        const labels = @Html.Raw(Json.Serialize(Model.ChartData.ChartLabels));
+        const values = @Html.Raw(Json.Serialize(Model.ChartData.ChartValues));
 
         const fmtCurrency = (n) => {
           try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:2}).format(n); }
