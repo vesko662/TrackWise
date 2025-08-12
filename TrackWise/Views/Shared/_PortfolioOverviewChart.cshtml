@@ -1,0 +1,210 @@
+﻿@model PortfolioDashboardChartData
+
+<div class="mb-4">
+    <h2 class="mb-3">Portfolio Overview</h2>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card hero-stat p-4">
+                <div class="text-muted small">Total Value</div>
+                <div class="display-6 fw-bold">@Model.TotalValue.ToString("C2")</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card hero-stat p-4">
+                <div class="text-muted small">Annual Return</div>
+                <div class="display-6 fw-bold">@Model.AnnualReturn.ToString("P2")</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card hero-stat p-4">
+                <div class="text-muted small">Annual Profit</div>
+                <div class="display-6 fw-bold">@Model.AnnualProfit.ToString("C2")</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <h2 class="mb-0">Performance Chart</h2>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="logToggle">
+            <label class="form-check-label" for="logToggle">Log scale</label>
+        </div>
+    </div>
+
+    <div class="card hero-chart p-3 p-md-4">
+        <div class="chart-container-lg">
+            <canvas id="portfolioChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-stat {
+        border: 1px solid rgba(0,0,0,.05);
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+        background: #fff;
+    }
+
+    .hero-chart {
+        border: 1px solid rgba(0,0,0,.05);
+        border-radius: 22px;
+        box-shadow: 0 16px 40px rgba(0,0,0,.06);
+        background: #fff;
+    }
+
+    .chart-container-lg {
+        position: relative;
+        height: 420px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+
+<script>
+    const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels)); 
+    const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartValues)); 
+
+    const zipped = labels.map((d, i) => ({
+      x: d,
+      y: (values[i] != null && Number(values[i]) > 0) ? Number(values[i]) : null
+    }))
+    .sort((a, b) => a.x.localeCompare(b.x))
+    .filter((p, idx, arr) => idx === 0 || p.x !== arr[idx-1].x);
+
+    function trimLeadingNull(arr){
+      let i = 0; while (i < arr.length && arr[i].y == null) i++;
+      return arr.slice(i);
+    }
+    const dataPoints = trimLeadingNull(zipped);
+
+    function minMaxPos(arr){
+      const a = arr.map(p => p.y).filter(v => v != null && v > 0);
+      return a.length ? { min: Math.min(...a), max: Math.max(...a) } : { min: 1, max: 1 };
+    }
+    const { min: yMin, max: yMax } = minMaxPos(dataPoints);
+
+    const fmtCurrency = (n) => {
+      try {
+        return new Intl.NumberFormat(undefined, { style:'currency', currency:'USD', maximumFractionDigits:2 }).format(n);
+      } catch {
+        return '$' + Number(n).toLocaleString(undefined, { maximumFractionDigits:2 });
+      }
+    };
+
+    const el  = document.getElementById('portfolioChart');
+    const ctx = el.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 420);
+    gradient.addColorStop(0, 'rgba(30,136,229,0.22)');
+    gradient.addColorStop(1, 'rgba(30,136,229,0)');
+
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Portfolio value',
+          data: dataPoints,                              
+          parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+          borderColor: '#1e88e5',
+          backgroundColor: gradient,
+          borderWidth: 2,
+          tension: 0.35,
+          fill: true,
+          spanGaps: false,
+          cubicInterpolationMode: 'monotone'
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        animation: false,
+        interaction: { mode: 'nearest', intersect: false, axis: 'x' },
+        elements: { point: { radius: 0, hitRadius: 10, hoverRadius: 3 } },
+        plugins: {
+          legend: { display: false },
+          decimation: { enabled: true, algorithm: 'lttb', samples: 1000 },
+          tooltip: {
+            enabled: true,
+            backgroundColor: 'rgba(255,255,255,0.98)',
+            titleColor: '#111',
+            bodyColor:  '#111',
+            borderColor: 'rgba(0,0,0,0.15)',
+            borderWidth: 1,
+            displayColors: false,
+            padding: 10,
+            callbacks: {
+              title(items) {
+                if (!items?.length) return '';
+                const raw   = items[0].raw;
+                const label = items[0].label; 
+                const s = (raw && raw.x) ? raw.x : label;
+                if (!s) return '';
+
+                if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+                  const [y,m,d] = s.split('-').map(Number);
+                  return new Date(y, m-1, d).toLocaleDateString();
+                }
+                return s;
+              },
+              label(ctx) {
+                const v = (ctx.raw && ctx.raw.y != null) ? ctx.raw.y : ctx.parsed?.y;
+                return (v != null) ? fmtCurrency(v) : '';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              parser: 'yyyy-MM-dd',
+              unit: 'day',
+              round: 'day',
+              tooltipFormat: 'PPP',
+              displayFormats: {
+                day:   'MMM d, yyyy',
+                month: 'MMM yyyy',
+                year:  'yyyy'
+              }
+            },
+            ticks: { maxRotation: 0, autoSkip: true, autoSkipPadding: 24 },
+            grid: { display: false }
+          },
+          y: {
+            type: 'linear',                
+            beginAtZero: false,
+            suggestedMin: yMin * 0.98,
+            suggestedMax: yMax * 1.02,
+            ticks: { callback: (v) => fmtCurrency(v) },
+            grid: { color: 'rgba(0,0,0,.06)', drawBorder: false }
+          }
+        }
+      }
+    });
+
+    const toggle = document.getElementById('logToggle');
+
+    function applyScale(useLog){
+      const y = chart.options.scales.y;
+      if (useLog) {
+        const minPositive = Math.max(1, Math.floor(yMin * 0.95));
+        y.type = 'logarithmic';
+        y.min = minPositive;
+        y.suggestedMin = undefined;
+        y.suggestedMax = undefined;
+      } else {
+        y.type = 'linear';
+        y.min = undefined;
+        y.suggestedMin = yMin * 0.98;
+        y.suggestedMax = yMax * 1.02;
+      }
+      chart.update('none');
+    }
+
+    toggle.checked = false;
+    applyScale(toggle.checked);
+
+    toggle.addEventListener('change', e => applyScale(e.target.checked));
+</script>
