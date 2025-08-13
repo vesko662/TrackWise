@@ -1,0 +1,99 @@
+﻿@model IEnumerable<PortfolioDashboardTransactionData>
+
+<div class="card hero-card p-0">
+    <div class="d-flex align-items-center justify-content-between p-3 p-md-4 border-bottom">
+        <h5 class="mb-0">Transactions</h5>
+        <div class="d-flex gap-2">
+            <a class="btn btn-primary" href="@Url.Action("Index", "Transaction", new { portfolioId= ViewBag.Id })">
+                Add transactions
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead class="small text-muted">
+                <tr>
+                    <th style="width:210px;">Date</th>
+                    <th style="width:120px;">Type</th>
+                    <th>Description</th>
+                    <th class="text-end" style="width:160px;">Quantity</th>
+                    <th class="text-end" style="width:160px;">Amount</th>
+                    <th style="width:60px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model?.Any() ?? true)
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-5">No transactions yet.</td></tr>
+                }
+                else
+                {
+                    foreach (var r in Model!)
+                    {
+                        var badgeClass = r.Type?.Equals("buy", StringComparison.OrdinalIgnoreCase) == true
+                        ? "bg-success-subtle text-success"
+                        : "bg-danger-subtle text-danger";
+                        <tr>
+                            <td>
+                                <div>@r.Created.ToString("MMM d, yyyy")</div>
+                                <div class="text-muted small">@r.Created.ToString("h:mm tt")</div>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill @badgeClass px-3 py-2">@r.Type</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="symbol-badge">@((string.IsNullOrWhiteSpace(r.AssetSymbol) ? "?" : r.AssetSymbol.Trim()[0].ToString().ToUpper()))</div>
+                                    <div>
+                                        <div class="fw-semibold">@r.AssetName</div>
+                                        <div class="text-muted small">@r.AssetSymbol</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-end">@r.Quantity.ToString("N0")</td>
+                            <td class="text-end">
+                                @(r.Amount.ToString("C2"))
+                            </td>
+                            <td class="text-center">
+                                <a asp-controller="Transaction" asp-action="Delete"  class="text-decoration-none" title="Delete"><i class="bi bi-x-circle"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .hero-card {
+        border: 1px solid rgba(0,0,0,.05);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 12px 32px rgba(0,0,0,.05);
+    }
+
+    .symbol-badge {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        background: #eef1f6;
+        color: #556;
+        font-size: .9rem;
+    }
+
+    .bg-success-subtle {
+        background: #eaf7ee !important;
+        color: #1b8a4b !important;
+    }
+
+    .bg-danger-subtle {
+        background: #fdeceb !important;
+        color: #c0392b !important;
+    }
+</style>

@@ -18,4 +18,13 @@
     @await Html.PartialAsync("_HoldingsTable", Model.HoldingData)
 </div>
 
+<div class="row g-4 mt-2">
+   <div class="col-lg-4">
+        @await Html.PartialAsync("_AssetClasses", Model.AssetClassesData)
+    </div> 
+    <div class="col-lg-8">
+        @await Html.PartialAsync("_TransactionsTable", Model.TransactionData)
+    </div>
+</div>
+
 

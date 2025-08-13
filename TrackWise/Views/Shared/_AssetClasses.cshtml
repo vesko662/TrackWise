@@ -1,0 +1,67 @@
+﻿@model PortfolioDashboardAssetClassesData
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Asset Classes</h5>
+        <div style="width:100%;max-width:520px;margin:auto">
+            <canvas id="assetAllocChart" height="280"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+    (() => {
+        const labels  = @Html.Raw(Json.Serialize(Model.Labels));
+        const percents = @Html.Raw(Json.Serialize(Model.Percents));
+
+        const palette = [
+            '#4F6D95', // blue-gray
+            '#FF8A00', // orange
+            '#E04F5F', // red
+            '#4BB4A5', // teal
+            '#9B59B6', // purple
+            '#2E86DE', // blue
+            '#6C757D', // gray
+            '#27AE60', // green
+            '#F39C12'  // yellow
+        ];
+        const colors = percents.map((_, i) => palette[i % palette.length]);
+
+        const ctx = document.getElementById('assetAllocChart');
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: percents,
+                    backgroundColor: colors,
+                    borderColor: '#fff',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',                      
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                const name = ctx.label ?? '';
+                                const val = Number(ctx.parsed);
+                                return `${name}: ${val.toFixed(2)}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    })();
+</script>

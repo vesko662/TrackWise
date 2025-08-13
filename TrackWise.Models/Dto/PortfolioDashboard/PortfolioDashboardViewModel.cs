@@ -10,7 +10,7 @@ namespace TrackWise.Models.Dto.PortfolioDashboard
     {
         public PortfolioDashboardChartData ChartData { get; set; }
         public IEnumerable<PortfolioDashboardHoldingData> HoldingData { get; set; }
-        public PortfolioDashboardTransactionData TransactionData { get; set; }
+        public IEnumerable<PortfolioDashboardTransactionData> TransactionData { get; set; }
         public PortfolioDashboardAssetClassesData AssetClassesData { get; set; }
     }
 }

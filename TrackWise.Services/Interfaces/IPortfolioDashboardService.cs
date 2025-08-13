@@ -12,7 +12,7 @@ namespace TrackWise.Services.Interfaces
         public PortfolioDashboardChartData BuildChartData(string portfolioId);
         public IEnumerable<PortfolioDashboardHoldingData> BuildHoldingData(string portfolioId); 
 
-        public PortfolioDashboardTransactionData BuildTransactionData(string portfolioId);
+        public IEnumerable<PortfolioDashboardTransactionData> BuildTransactionData(string portfolioId);
         public PortfolioDashboardAssetClassesData BuildAssetClassesData(string portfolioId);
     }
 }

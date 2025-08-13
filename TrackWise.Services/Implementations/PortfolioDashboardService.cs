@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TrackWise.Database.Repository.Interface;
@@ -46,7 +47,27 @@ namespace TrackWise.Services.Implementations
         }
         public PortfolioDashboardAssetClassesData BuildAssetClassesData(string portfolioId)
         {
-            throw new NotImplementedException();
+            var holdings = holdingRepository
+                .GetWhere(h => h.PortfolioId == portfolioId)
+                .ToList();
+
+            var grouped = holdings.GroupBy(x => x.Asset.Type).ToDictionary(x=>x.Key,x=>x.Count());
+            var total = grouped.Values.Sum();
+
+            var percentages = grouped
+               .ToDictionary(
+                  g => g.Key,
+                  g => (decimal)g.Value / total * 100
+                );
+
+
+            var labels = grouped.Keys.Select(k => k.ToString()).ToList();
+
+            return new PortfolioDashboardAssetClassesData
+            {
+                Labels = labels,
+                Percents = percentages.Values.ToList()
+            };
         }
 
         public PortfolioDashboardChartData BuildChartData(string portfolioId)
@@ -154,7 +175,7 @@ namespace TrackWise.Services.Implementations
                 var lp = lastPrices.TryGetValue(h.AssetId, out var v) ? v : 0m;
                 return h.Quantity * lp;
             });
-            if (totalValue <= 0m) totalValue = 1m; 
+            if (totalValue <= 0m) totalValue = 1m;
 
             var today = DateTime.UtcNow.Date;
 
@@ -179,19 +200,19 @@ namespace TrackWise.Services.Implementations
                 var holdingStart = GetOldestRemainingLotDateFIFO(assetTx, qty) ?? today;
                 var holdingDays = Math.Max(0, (today - holdingStart).Days);
 
-                    decimal Annualize(decimal r) =>
-                        (holdingDays >= 365 && r > -0.9999m)
-                            ? (decimal)Math.Pow(1.0 + (double)r, 365.0 / holdingDays) - 1m
-                            : r;
+                decimal Annualize(decimal r) =>
+                    (holdingDays >= 365 && r > -0.9999m)
+                        ? (decimal)Math.Pow(1.0 + (double)r, 365.0 / holdingDays) - 1m
+                        : r;
 
-                    priceRetPct = Annualize(priceRetPct);
-                    netPlPct = Annualize(netPlPct);
+                priceRetPct = Annualize(priceRetPct);
+                netPlPct = Annualize(netPlPct);
 
                 var alloc = marketValue / totalValue;
 
                 result.Add(new PortfolioDashboardHoldingData
                 {
-                    Symbol = h.Asset.Symbol ,
+                    Symbol = h.Asset.Symbol,
                     Quantity = qty,
                     HoldingPeriodDays = holdingDays,
                     CumulativeCashflow = cumCash,
@@ -233,9 +254,22 @@ namespace TrackWise.Services.Implementations
             return fifo.Peek().date;
         }
 
-        public PortfolioDashboardTransactionData BuildTransactionData(string portfolioId)
+        public IEnumerable<PortfolioDashboardTransactionData> BuildTransactionData(string portfolioId)
         {
-            throw new NotImplementedException();
+            var transactions = transactionRepository.GetWhere(x => x.PortfolioId == portfolioId).ToList();
+
+            return transactions
+                .Select(x => new PortfolioDashboardTransactionData()
+                {
+                    AssetName = x.Asset.Name,
+                    Quantity = x.Quantity,
+                    AssetSymbol = x.Asset.Symbol,
+                    Created = x.Created,
+                    Type = x.Type.ToString(),
+                    Amount = x.Quantity * x.Price
+                })
+                .ToList();
+
         }
 
         private (List<string> labels, List<decimal> values) BuildChartFromTransactions(

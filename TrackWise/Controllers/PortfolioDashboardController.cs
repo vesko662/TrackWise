@@ -19,6 +19,8 @@ namespace TrackWise.Web.Controllers
             PortfolioDashboardViewModel model = new PortfolioDashboardViewModel();
             model.ChartData = dashboardService.BuildChartData(Id);
             model.HoldingData=dashboardService.BuildHoldingData(Id);
+            model.AssetClassesData=dashboardService.BuildAssetClassesData(Id);
+            model.TransactionData=dashboardService.BuildTransactionData(Id);
             return View(model);
         }
     }
