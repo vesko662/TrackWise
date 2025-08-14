@@ -87,5 +87,13 @@ namespace TrackWise.Services.Implementations
             }
         }
 
+        public void DeleteTransaction(string portfolioId, string transactionId)
+        {
+            var forDelete=transactionRepository.GetWhere(x => x.PortfolioId == portfolioId && x.Id == transactionId).FirstOrDefault();
+            if (forDelete != null)
+            {
+                transactionRepository.Delete(forDelete);
+            }
+        }
     }
 }

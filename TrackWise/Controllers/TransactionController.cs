@@ -9,9 +9,11 @@ namespace TrackWise.Web.Controllers
     public class TransactionController : Controller
     {
         private readonly ITransactionService transactionService;
-        public TransactionController(ITransactionService transactionService)
+        public readonly IPortfolioDashboardService portfolioDashboardService;
+        public TransactionController(ITransactionService transactionService, IPortfolioDashboardService portfolioDashboardService)
         {
             this.transactionService = transactionService;
+            this.portfolioDashboardService = portfolioDashboardService;
         }
         public IActionResult Index(string portfolioId)
         {
@@ -26,7 +28,21 @@ namespace TrackWise.Web.Controllers
                 return View("Index", transaction);
             }
             transactionService.AddTransaction(transaction);
-           return RedirectToAction("Index", "PortfolioDashboard", new { Id = transaction.PortfolioId });
+            return RedirectToAction("Index", "PortfolioDashboard", new { Id = transaction.PortfolioId });
+        }
+
+        [HttpPost]
+        public IActionResult Delete(string transactionId, string portfolioId)
+        {
+            transactionService.DeleteTransaction(transactionId, portfolioId);
+
+            return RedirectToAction("Index", "PortfolioDashboard", new { Id = portfolioId });
+        }
+
+
+        public IActionResult All(string portfolioId)
+        {
+            return View(portfolioDashboardService.BuildTransactionData(portfolioId));
         }
     }
 }

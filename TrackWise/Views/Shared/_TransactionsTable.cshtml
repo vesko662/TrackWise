@@ -2,10 +2,13 @@
 
 <div class="card hero-card p-0">
     <div class="d-flex align-items-center justify-content-between p-3 p-md-4 border-bottom">
-        <h5 class="mb-0">Transactions</h5>
+        <h3 class="mb-3">Transactions</h3>
         <div class="d-flex gap-2">
             <a class="btn btn-primary" href="@Url.Action("Index", "Transaction", new { portfolioId= ViewBag.Id })">
                 Add transactions
+            </a>
+            <a class="btn btn-secondary" href="@Url.Action("All", "Transaction", new { portfolioId = ViewBag.Id })">
+                View All
             </a>
         </div>
     </div>
@@ -56,7 +59,18 @@
                                 @(r.Amount.ToString("C2"))
                             </td>
                             <td class="text-center">
-                                <a asp-controller="Transaction" asp-action="Delete"  class="text-decoration-none" title="Delete"><i class="bi bi-x-circle"></i></a>
+                                <form asp-controller="Transaction"
+                                      asp-action="Delete"
+                                      method="post"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('Delete this transaction?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="transactionId" value="@r.Id" />
+                                    <input type="hidden" name="portfolioId" value="@ViewBag.Id" />
+                                    <button type="submit" class="btn btn-link p-0 text-decoration-none" title="Delete">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }

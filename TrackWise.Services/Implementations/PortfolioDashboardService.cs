@@ -261,6 +261,7 @@ namespace TrackWise.Services.Implementations
             return transactions
                 .Select(x => new PortfolioDashboardTransactionData()
                 {
+                    Id = x.Id,
                     AssetName = x.Asset.Name,
                     Quantity = x.Quantity,
                     AssetSymbol = x.Asset.Symbol,

@@ -20,7 +20,7 @@ namespace TrackWise.Web.Controllers
             model.ChartData = dashboardService.BuildChartData(Id);
             model.HoldingData=dashboardService.BuildHoldingData(Id);
             model.AssetClassesData=dashboardService.BuildAssetClassesData(Id);
-            model.TransactionData=dashboardService.BuildTransactionData(Id);
+            model.TransactionData=dashboardService.BuildTransactionData(Id).Take(3);
             return View(model);
         }
     }
