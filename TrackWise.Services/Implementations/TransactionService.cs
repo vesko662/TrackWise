@@ -89,10 +89,60 @@ namespace TrackWise.Services.Implementations
 
         public void DeleteTransaction(string portfolioId, string transactionId)
         {
-            var forDelete=transactionRepository.GetWhere(x => x.PortfolioId == portfolioId && x.Id == transactionId).FirstOrDefault();
-            if (forDelete != null)
+            var forDelete = transactionRepository
+         .GetWhere(x => x.PortfolioId == portfolioId && x.Id == transactionId)
+         .FirstOrDefault();
+
+            if (forDelete == null)
+                return;
+
+            var holding = holdingRepository.GetByPortfolioAndAsset(forDelete.PortfolioId, forDelete.AssetId);
+
+            if (holding != null)
             {
-                transactionRepository.Delete(forDelete);
+                if (forDelete.Type == TransactionType.Buy)
+                {
+                    if (holding.Quantity > forDelete.Quantity)
+                    {
+                        var totalCostBefore = holding.Quantity * holding.AvgBuyPrice;
+                        var totalCostAfter = totalCostBefore - (forDelete.Quantity * forDelete.Price);
+
+                        holding.Quantity -= forDelete.Quantity;
+
+                        holding.AvgBuyPrice = holding.Quantity > 0
+                            ? totalCostAfter / holding.Quantity
+                            : 0;
+
+                        if (holding.Quantity == 0)
+                            holdingRepository.Delete(holding);
+                        else
+                            holdingRepository.Update(holding);
+                    }
+                    else
+                    {
+                        holdingRepository.Delete(holding);
+                    }
+                }
+                else if (forDelete.Type == TransactionType.Sell)
+                {
+                    holding.Quantity += forDelete.Quantity;
+                    holdingRepository.Update(holding);
+                }
+
+                holdingRepository.Save();
+            }
+
+            transactionRepository.Delete(forDelete);
+            transactionRepository.Save();
+
+            var hasOtherTransactions = transactionRepository
+       .GetWhere(t => t.PortfolioId == forDelete.PortfolioId && t.AssetId == forDelete.AssetId)
+       .Any();
+
+            if (!hasOtherTransactions && holding != null)
+            {
+                holdingRepository.Delete(holding);
+                holdingRepository.Save();
             }
         }
     }

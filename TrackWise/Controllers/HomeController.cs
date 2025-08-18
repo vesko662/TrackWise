@@ -12,7 +12,7 @@ namespace TrackWise.Controllers
         {
             _logger = logger;
         }
-
+        
         public IActionResult Index()
         {
             return View();

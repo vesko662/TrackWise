@@ -269,6 +269,7 @@ namespace TrackWise.Services.Implementations
                     Type = x.Type.ToString(),
                     Amount = x.Quantity * x.Price
                 })
+                .OrderByDescending(x => x.Created)
                 .ToList();
 
         }

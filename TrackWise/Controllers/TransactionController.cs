@@ -34,7 +34,7 @@ namespace TrackWise.Web.Controllers
         [HttpPost]
         public IActionResult Delete(string transactionId, string portfolioId)
         {
-            transactionService.DeleteTransaction(transactionId, portfolioId);
+            transactionService.DeleteTransaction(portfolioId, transactionId);
 
             return RedirectToAction("Index", "PortfolioDashboard", new { Id = portfolioId });
         }
