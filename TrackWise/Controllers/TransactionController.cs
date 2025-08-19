@@ -42,6 +42,7 @@ namespace TrackWise.Web.Controllers
 
         public IActionResult All(string portfolioId)
         {
+            ViewBag.Id = portfolioId;
             return View(portfolioDashboardService.BuildTransactionData(portfolioId));
         }
     }

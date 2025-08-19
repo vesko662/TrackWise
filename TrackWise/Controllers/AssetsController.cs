@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TrackWise.Services.Interfaces;
 
 namespace TrackWise.Web.Controllers
 {
     [Route("api/assets")]
+    [Authorize]
+
     public class AssetsController : Controller
     {
         private readonly IAssetService assetService;
