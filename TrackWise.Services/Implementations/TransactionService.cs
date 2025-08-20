@@ -134,16 +134,6 @@ namespace TrackWise.Services.Implementations
 
             transactionRepository.Delete(forDelete);
             transactionRepository.Save();
-
-            var hasOtherTransactions = transactionRepository
-       .GetWhere(t => t.PortfolioId == forDelete.PortfolioId && t.AssetId == forDelete.AssetId)
-       .Any();
-
-            if (!hasOtherTransactions && holding != null)
-            {
-                holdingRepository.Delete(holding);
-                holdingRepository.Save();
-            }
         }
     }
 }

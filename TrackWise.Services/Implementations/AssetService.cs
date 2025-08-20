@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using TrackWise.Database.Repository.Interface;
 using TrackWise.Models.Dto.AssetDtos;
 using TrackWise.Models.Enums;

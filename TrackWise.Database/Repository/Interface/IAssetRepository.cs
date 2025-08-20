@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using TrackWise.Models.Dto.AssetDtos;
-using TrackWise.Models.Entities;
+﻿using TrackWise.Models.Entities;
 
 namespace TrackWise.Database.Repository.Interface
 {

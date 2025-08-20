@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using TrackWise.Database.Repository.Interface;
+﻿using TrackWise.Database.Repository.Interface;
 using TrackWise.Models.Dto.PortfolioDashboard;
 using TrackWise.Models.Entities;
 using TrackWise.Models.Enums;

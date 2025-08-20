@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrackWise.Database.Repository.Interface;
+﻿using TrackWise.Database.Repository.Interface;
 using TrackWise.Models.Entities;
-using TrackWise.Models.Enums;
 using TrackWise.Services.Interfaces;
 
 namespace TrackWise.Seeding.Seeders

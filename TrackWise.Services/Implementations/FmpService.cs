@@ -1,17 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using TrackWise.Models.Dto.ApiResponse;
 using TrackWise.Models.Dto.AssetDtos;
-using TrackWise.Models.Dto.PortfolioDto;
 using TrackWise.Models.Dto.PriceDto;
-using TrackWise.Models.Entities;
-using TrackWise.Models.Enums;
 using TrackWise.Services.Interfaces;
 
 namespace TrackWise.Services.Implementations

@@ -34,12 +34,12 @@
                     {
                         var priceReturnValue = (r.LastPrice - r.CumulativeCashflowPerShare) * r.Quantity;
                         var netProfitValue = r.MarketValue - r.CumulativeCashflow;
-                        var allocPct = r.AllocationPercent; 
+                        var allocPct = r.AllocationPercent;
 
                         <tr class="border-top">
                             <td>
                                 <div class="fw-semibold">@r.Symbol.ToUpper()</div>
-                                <div class="text-muted small">
+                                <div class="text-muted small"></div>
                             </td>
 
                             <td class="text-center">
@@ -48,27 +48,27 @@
                             </td>
 
                             <td class="text-end">
-                                <div class="fw-semibold">@r.CumulativeCashflow.ToString("C2")</div>
-                                <div class="text-muted small">@r.CumulativeCashflowPerShare.ToString("C2")/share</div>
+                                <div class="fw-semibold">@r.CumulativeCashflow.ToString("F2")</div>
+                                <div class="text-muted small">@r.CumulativeCashflowPerShare.ToString("F2")/share</div>
                             </td>
 
                             <td class="text-end">
-                                <div class="fw-semibold">@r.MarketValue.ToString("C2")</div>
-                                <div class="text-muted small">@r.LastPrice.ToString("C2")/share</div>
+                                <div class="fw-semibold">@r.MarketValue.ToString("F2")</div>
+                                <div class="text-muted small">@r.LastPrice.ToString("F2")/share</div>
                             </td>
 
                             <td class="text-end">
-                                <div class="fw-semibold text-success">
-                                    @priceReturnValue.ToString("C2")
+                                <div class="fw-semibold @(priceReturnValue >= 0 ? "text-success" : "text-danger")">
+                                    @priceReturnValue.ToString("F2")
                                 </div>
-                                <div class="text-success small">
+                                <div class="small @(r.PriceReturnPercent >= 0 ? "text-success" : "text-danger")">
                                     @r.PriceReturnPercent.ToString("P2")
                                 </div>
                             </td>
 
                             <td class="text-end">
                                 <div class="fw-semibold @(netProfitValue >= 0 ? "text-success" : "text-danger")">
-                                    @netProfitValue.ToString("C2")
+                                    @netProfitValue.ToString("F2")
                                 </div>
                                 <div class="small @(r.NetProfitLossPercent >= 0 ? "text-success" : "text-danger")">
                                     @r.NetProfitLossPercent.ToString("P2")

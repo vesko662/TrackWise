@@ -6,19 +6,23 @@
         <div class="col-md-4">
             <div class="card hero-stat p-4">
                 <div class="text-muted small">Total Value</div>
-                <div class="display-6 fw-bold">@Model.TotalValue.ToString("C2")</div>
+                <div class="display-6 fw-bold">@Model.TotalValue</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card hero-stat p-4">
                 <div class="text-muted small">Annual Return</div>
-                <div class="display-6 fw-bold">@Model.AnnualReturn.ToString("P2")</div>
+                <div class="display-6 fw-bold @(Model.AnnualReturn < 0 ? "text-danger" : "text-success")">
+                    @Model.AnnualReturn.ToString("P2")
+                </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card hero-stat p-4">
                 <div class="text-muted small">Annual Profit</div>
-                <div class="display-6 fw-bold">@Model.AnnualProfit.ToString("C2")</div>
+                <div class="display-6 fw-bold @(Model.AnnualProfit < 0 ? "text-danger" : "text-success")">
+                    @Model.AnnualProfit.ToString("f2")
+                </div>
             </div>
         </div>
     </div>
@@ -65,12 +69,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
 
 <script>
-    const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels)); 
-    const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartValues)); 
+    const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels));
+    const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartValues));
 
     const zipped = labels.map((d, i) => ({
       x: d,
-      y: (values[i] != null && Number(values[i]) > 0) ? Number(values[i]) : null
+      y: (values[i] != null) ? Number(values[i]) : null
     }))
     .sort((a, b) => a.x.localeCompare(b.x))
     .filter((p, idx, arr) => idx === 0 || p.x !== arr[idx-1].x);
@@ -82,7 +86,7 @@
     const dataPoints = trimLeadingNull(zipped);
 
     function minMaxPos(arr){
-      const a = arr.map(p => p.y).filter(v => v != null && v > 0);
+      const a = arr.map(p => p.y).filter(v => v != null);
       return a.length ? { min: Math.min(...a), max: Math.max(...a) } : { min: 1, max: 1 };
     }
     const { min: yMin, max: yMax } = minMaxPos(dataPoints);
@@ -106,7 +110,7 @@
       data: {
         datasets: [{
           label: 'Portfolio value',
-          data: dataPoints,                              
+          data: dataPoints,
           parsing: { xAxisKey: 'x', yAxisKey: 'y' },
           borderColor: '#1e88e5',
           backgroundColor: gradient,
@@ -138,7 +142,7 @@
               title(items) {
                 if (!items?.length) return '';
                 const raw   = items[0].raw;
-                const label = items[0].label; 
+                const label = items[0].label;
                 const s = (raw && raw.x) ? raw.x : label;
                 if (!s) return '';
 
@@ -173,7 +177,7 @@
             grid: { display: false }
           },
           y: {
-            type: 'linear',                
+            type: 'linear',
             beginAtZero: false,
             suggestedMin: yMin * 0.98,
             suggestedMax: yMax * 1.02,

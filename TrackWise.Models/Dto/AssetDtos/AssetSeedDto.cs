@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrackWise.Models.Enums;
+﻿using TrackWise.Models.Enums;
 
 namespace TrackWise.Models.Dto.AssetDtos
 {
