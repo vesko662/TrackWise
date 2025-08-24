@@ -6,7 +6,10 @@
 }
 
 <link rel="stylesheet" href="~/css/transaction.css" asp-append-version="true" />
-
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    Transaction must be in the <strong>same currency</strong> as the portfolio
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 <div class="porfolioContaner">
     <div class="transaction-form">
         <h4 class="mb-4">Add Transaction</h4>

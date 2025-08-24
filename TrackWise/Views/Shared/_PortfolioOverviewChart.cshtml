@@ -6,7 +6,7 @@
         <div class="col-md-4">
             <div class="card hero-stat p-4">
                 <div class="text-muted small">Total Value</div>
-                <div class="display-6 fw-bold">@Model.TotalValue</div>
+                <div class="display-6 fw-bold">@Model.TotalValue.ToString("F2")@ViewBag.Symbol</div>
             </div>
         </div>
         <div class="col-md-4">
@@ -21,7 +21,7 @@
             <div class="card hero-stat p-4">
                 <div class="text-muted small">Annual Profit</div>
                 <div class="display-6 fw-bold @(Model.AnnualProfit < 0 ? "text-danger" : "text-success")">
-                    @Model.AnnualProfit.ToString("f2")
+                    @Model.AnnualProfit.ToString("f2")@ViewBag.Symbol
                 </div>
             </div>
         </div>
@@ -69,6 +69,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
 
 <script>
+    const currencySymbol = "@ViewBag.Symbol";       
+    const currencyCode   = "@ViewBag.CurrencyCode"; 
+
     const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels));
     const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartValues));
 
@@ -92,11 +95,20 @@
     const { min: yMin, max: yMax } = minMaxPos(dataPoints);
 
     const fmtCurrency = (n) => {
+      if (n == null) return "";
       try {
-        return new Intl.NumberFormat(undefined, { style:'currency', currency:'USD', maximumFractionDigits:2 }).format(n);
-      } catch {
-        return '$' + Number(n).toLocaleString(undefined, { maximumFractionDigits:2 });
-      }
+        if (currencyCode) {
+          return new Intl.NumberFormat(undefined, {
+            style:'currency',
+            currency: currencyCode,
+            maximumFractionDigits:2
+          }).format(n);
+        }
+      } catch {}
+      return currencySymbol + Number(n).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     };
 
     const el  = document.getElementById('portfolioChart');

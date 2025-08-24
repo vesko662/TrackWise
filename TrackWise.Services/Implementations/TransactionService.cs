@@ -13,22 +13,28 @@ namespace TrackWise.Services.Implementations
         private readonly IHoldingRepository holdingRepository;
         private readonly IPriceService priceService;
         private readonly IMapper mapper;
+        private readonly ICurrencyService currencyService;
 
         public TransactionService(
             ITransactionRepository transactionRepository,
             IHoldingRepository holdingRepository,
             IPriceService priceService,
-            IMapper mapper)
+            IMapper mapper,
+            ICurrencyService currencyService)
         {
             this.transactionRepository = transactionRepository;
             this.holdingRepository = holdingRepository;
             this.priceService = priceService;
             this.mapper = mapper;
+            this.currencyService = currencyService;
         }
 
 
         public void AddTransaction(TransactionCreateDto transaction)
         {
+
+            var rate = 1/(currencyService.GetCurrencyRateAsync(currencyService.GetCurrency(transaction.PortfolioId).Code).Result);
+            transaction.Price = transaction.Price * rate;
             var mappedTransaction = mapper.Map<Transaction>(transaction);
             transactionRepository.Add(mappedTransaction);
             transactionRepository.Save();

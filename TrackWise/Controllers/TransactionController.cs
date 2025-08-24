@@ -10,10 +10,12 @@ namespace TrackWise.Web.Controllers
     {
         private readonly ITransactionService transactionService;
         public readonly IPortfolioDashboardService portfolioDashboardService;
-        public TransactionController(ITransactionService transactionService, IPortfolioDashboardService portfolioDashboardService)
+        private readonly ICurrencyService currencyService;
+        public TransactionController(ITransactionService transactionService, IPortfolioDashboardService portfolioDashboardService,ICurrencyService currencyService)
         {
             this.transactionService = transactionService;
             this.portfolioDashboardService = portfolioDashboardService;
+            this.currencyService = currencyService;
         }
         public IActionResult Index(string portfolioId)
         {
@@ -43,6 +45,7 @@ namespace TrackWise.Web.Controllers
         public IActionResult All(string portfolioId)
         {
             ViewBag.Id = portfolioId;
+            ViewBag.Symbol = currencyService.GetCurrencySymbol(currencyService.GetCurrency(portfolioId).Code);
             return View(portfolioDashboardService.BuildTransactionData(portfolioId));
         }
     }

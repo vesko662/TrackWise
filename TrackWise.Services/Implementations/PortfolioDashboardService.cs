@@ -12,17 +12,20 @@ namespace TrackWise.Services.Implementations
         private readonly IPriceRepository priceRepository;
         private readonly IPriceService priceService;
         private readonly ITransactionRepository transactionRepository;
+        private readonly ICurrencyService currencyService;
 
         public PortfolioDashboardService(
             IHoldingRepository holdingRepository,
             IPriceRepository priceRepository,
             IPriceService priceService,
-            ITransactionRepository transactionRepository)
+            ITransactionRepository transactionRepository,
+            ICurrencyService currencyService)
         {
             this.holdingRepository = holdingRepository;
             this.priceRepository = priceRepository;
             this.priceService = priceService;
             this.transactionRepository = transactionRepository;
+            this.currencyService = currencyService;
         }
         private void UpdatePriceHistory(IEnumerable<string> assetIds)
         {
@@ -40,6 +43,16 @@ namespace TrackWise.Services.Implementations
                     priceService.AddPriceHistory(assetId);
                 }
             }
+        }
+
+        private decimal GetPorfolioRate(string portfolioId)
+        {
+            var currency = currencyService.GetCurrency(portfolioId);
+            decimal rates = 1;
+            if (currency.Code != "USD")
+                rates = currencyService.GetCurrencyRateAsync(currency.Code).Result;
+
+            return rates;   
         }
         public PortfolioDashboardAssetClassesData BuildAssetClassesData(string portfolioId)
         {
@@ -132,15 +145,16 @@ namespace TrackWise.Services.Implementations
                 annualReturn = (decimal)Math.Pow(1.0 + (double)periodReturn, 365.0 / days) - 1m;
             }
 
+            var rate = GetPorfolioRate(portfolioId);
 
             return new PortfolioDashboardChartData
             {
                 PortfolioId = portfolioId,
-                TotalValue = totalValue,
-                AnnualProfit = profit,
-                AnnualReturn = annualReturn,
+                TotalValue = totalValue * rate,
+                AnnualProfit = profit * rate,
+                AnnualReturn = annualReturn ,
                 ChartLabels = labels,
-                ChartValues = values
+                ChartValues = values.Select(x => x * rate).ToList(),
             };
         }
 
@@ -174,6 +188,8 @@ namespace TrackWise.Services.Implementations
             if (totalValue <= 0m) totalValue = 1m;
 
             var today = DateTime.UtcNow.Date;
+
+            decimal rate = GetPorfolioRate(portfolioId);
 
             foreach (var h in holdings)
             {
@@ -211,10 +227,10 @@ namespace TrackWise.Services.Implementations
                     Symbol = h.Asset.Symbol,
                     Quantity = qty,
                     HoldingPeriodDays = holdingDays,
-                    CumulativeCashflow = cumCash,
-                    CumulativeCashflowPerShare = cfPerShare,
-                    MarketValue = marketValue,
-                    LastPrice = last,
+                    CumulativeCashflow = cumCash* rate,
+                    CumulativeCashflowPerShare = cfPerShare* rate,
+                    MarketValue = marketValue * rate,
+                    LastPrice = last * rate,
                     PriceReturnPercent = priceRetPct,
                     NetProfitLossPercent = netPlPct,
                     AllocationPercent = alloc
@@ -253,7 +269,7 @@ namespace TrackWise.Services.Implementations
         public IEnumerable<PortfolioDashboardTransactionData> BuildTransactionData(string portfolioId)
         {
             var transactions = transactionRepository.GetWhere(x => x.PortfolioId == portfolioId).ToList();
-
+            decimal rate = GetPorfolioRate(portfolioId);
             return transactions
                 .Select(x => new PortfolioDashboardTransactionData()
                 {
@@ -263,7 +279,7 @@ namespace TrackWise.Services.Implementations
                     AssetSymbol = x.Asset.Symbol,
                     Created = x.Created,
                     Type = x.Type.ToString(),
-                    Amount = x.Quantity * x.Price
+                    Amount = (x.Quantity * x.Price)* rate
                 })
                 .OrderByDescending(x => x.Created)
                 .ToList();

@@ -9,9 +9,11 @@ namespace TrackWise.Web.Controllers
     public class PortfolioDashboardController : Controller
     {
         private readonly IPortfolioDashboardService dashboardService;
-        public PortfolioDashboardController(IPortfolioDashboardService dashboardService)
+        private readonly ICurrencyService currencyService;
+        public PortfolioDashboardController(IPortfolioDashboardService dashboardService, ICurrencyService currencyService)
         {
             this.dashboardService = dashboardService;
+            this.currencyService = currencyService;
         }
         public IActionResult Index(string Id)
         {
@@ -21,6 +23,10 @@ namespace TrackWise.Web.Controllers
             model.HoldingData=dashboardService.BuildHoldingData(Id);
             model.AssetClassesData=dashboardService.BuildAssetClassesData(Id);
             model.TransactionData=dashboardService.BuildTransactionData(Id).Take(3);
+
+            var currency=currencyService.GetCurrency(Id);
+            ViewBag.Symbol= currencyService.GetCurrencySymbol(currency.Code);
+            ViewBag.CurrencyCode = currency.Code;
             return View(model);
         }
     }

@@ -56,7 +56,7 @@
                             </td>
                             <td class="text-end">@r.Quantity.ToString()</td>
                             <td class="text-end">
-                                @(r.Amount.ToString("C2"))
+                                @(r.Amount.ToString("F2"))@ViewBag.Symbol
                             </td>
                             <td class="text-center">
                                 <form asp-controller="Transaction"
